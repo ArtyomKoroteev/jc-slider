@@ -9,6 +9,10 @@
   },
   "extends": "airbnb-base",
   "rules": {
-    
+    "no-trailing-spaces": "off",
+    "eol-last": "off",
+    "linebreak-style": "off",
+    "no-underscore-dangle": "off",
+    "func-names": "off"
   }
 }

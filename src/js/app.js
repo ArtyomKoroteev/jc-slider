@@ -3,11 +3,18 @@
 // This file will be compiled into app.js and will not be minified.
 // Feel free with using ES6 here.
 
-import DE from './modules/dots';
+// import DE from './modules/dots';
+import jcSlider from './modules/jc_slider';
 
 (($) => {
   // When DOM is ready
   $(() => {
-    DE.dotsEffect();
+    // DE.dotsEffect();
+    const slider = new jcSlider({
+      navigation: '.jc-slider-next',
+    });
+    slider.objectSorter();
+    // console.log(slider);
+    
   });
 })(jQuery);
