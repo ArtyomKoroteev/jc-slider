@@ -10,11 +10,14 @@ import jcSlider from './modules/jc_slider';
   // When DOM is ready
   $(() => {
     // DE.dotsEffect();
-    const slider = new jcSlider({
-      navigation: '.jc-slider-next',
+    const slider = new jcSlider('.jc-slider-wrapper', {
+      // navigation: {
+      //   navNext: '.jc-slider-next',
+      //   navPrev: '.jc-slider-prev',
+      // },
+      // pagination: {
+      //   el: '.jc-slider-pagination',
+      // },
     });
-    slider.objectSorter();
-    // console.log(slider);
-    
   });
 })(jQuery);
