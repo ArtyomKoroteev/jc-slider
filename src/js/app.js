@@ -4,21 +4,22 @@
 // Feel free with using ES6 here.
 
 // import DE from './modules/dots';
-import jcSlider from './modules/jc_slider';
+import JcSlider from './modules/jc_slider';
 
 (($) => {
   // When DOM is ready
   $(() => {
-    // DE.dotsEffect();
-    const slider = new jcSlider('.jc-slider-wrapper', {
-      navigation: {
-        navNext: '.jc-slider-next',
-        navPrev: '.jc-slider-prev',
-      },
-      pagination: {
-        el: '.jc-slider-pagination',
-      },
-      speed: 1000,
+    const slider = new JcSlider('.jc-slider-wrapper', {
+      // navigation: {
+      //   navNext: '.jc-slider-next',
+      //   navPrev: '.jc-slider-prev',
+      // },
+      // pagination: {
+      //   el: '.jc-slider-pagination',
+      // },
+      // speed: 1000,
     });
+    console.log(slider);
+    
   });
 })(jQuery);

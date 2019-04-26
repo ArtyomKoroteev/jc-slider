@@ -1,4 +1,4 @@
-export default class jcSlider {
+export default class JcSlider {
   constructor(sliderObj = '.jc-slider-wrapper', options) {
     this.defaults = {
       navigation: {
@@ -25,15 +25,15 @@ export default class jcSlider {
   }
 
   checks() {
-    if (!($(this.slider) in ($(this.navNext)))) {
+    if (!(($(this.navNext)) in $(this.slider))) {
       this.options.navigation.navNext = false;
     }
 
-    if (!($(this.slider) in ($(this.navPrev)))) {
+    if (!(($(this.navPrev)) in $(this.slider))) {
       this.options.navigation.navPrev = false;
     }
 
-    if (!($(this.slider) in ($(this.paginate)))) {
+    if (!(($(this.paginate)) in $(this.slider))) {
       this.options.pagination.el = false;
     }
   }
