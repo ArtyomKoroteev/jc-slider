@@ -11,13 +11,14 @@ import jcSlider from './modules/jc_slider';
   $(() => {
     // DE.dotsEffect();
     const slider = new jcSlider('.jc-slider-wrapper', {
-      // navigation: {
-      //   navNext: '.jc-slider-next',
-      //   navPrev: '.jc-slider-prev',
-      // },
-      // pagination: {
-      //   el: '.jc-slider-pagination',
-      // },
+      navigation: {
+        navNext: '.jc-slider-next',
+        navPrev: '.jc-slider-prev',
+      },
+      pagination: {
+        el: '.jc-slider-pagination',
+      },
+      speed: 1000,
     });
   });
 })(jQuery);

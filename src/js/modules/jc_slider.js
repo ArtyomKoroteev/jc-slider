@@ -9,22 +9,26 @@ export default class jcSlider {
         el: '.jc-slider-pagination',
       },
       autoplay: false,
+      speed: 500,
     };
     this.options = $.extend(this.defaults, options);
     console.log(this.options);
+    
     this.slider = sliderObj;
     this.navNext = this.options.navigation.navNext;
     this.navPrev = this.options.navigation.navPrev;
     this.paginate = this.options.pagination.el;
+    this.speedVal = this.options.speed;
     this._move = 0;
+    this.BUTTON_DISABLE = 'js-slider-disable';
     this.init();
   }
 
-  checks() {    
+  checks() {
     if (!($(this.slider) in ($(this.navNext)))) {
       this.options.navigation.navNext = false;
     }
-        
+
     if (!($(this.slider) in ($(this.navPrev)))) {
       this.options.navigation.navPrev = false;
     }
@@ -34,17 +38,38 @@ export default class jcSlider {
     }
   }
 
+  speed() {
+    $(this.slider).css('transition-duration', `${this.speedVal}ms`);
+  }
+
+  getActiveSlide() {
+    // console.log();
+    $($(this.slider).children()[0]).addClass('jc-slider-active');
+    $($(this.paginate).children()[0]).addClass('jc-slider-bullet-active');
+    // $($(this.slider).children()[0]).next().addClass('jc-slider-next');
+  }
+
   nextSlide() {
     $(this.navNext).on('click', () => {
-      this._move += $(this.slider).innerWidth();
-      $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
+      if (-this._move > (-($(this.slider).innerWidth()) * ($(this.slider).children().length - 1))) {
+        this._move += $(this.slider).innerWidth();
+        $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
+        $(this.navPrev).removeClass(this.BUTTON_DISABLE);
+      } else {
+        $(this.navNext).addClass(this.BUTTON_DISABLE);
+      }
     });
   }
 
   prevSlide() {
     $(this.navPrev).on('click', () => {
-      this._move -= $(this.slider).innerWidth();
-      $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
+      if (this._move !== 0) {
+        this._move -= $(this.slider).innerWidth();
+        $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
+        $(this.navNext).removeClass(this.BUTTON_DISABLE);
+      } else {
+        $(this.navPrev).addClass(this.BUTTON_DISABLE);
+      }
     });
   }
 
@@ -60,9 +85,11 @@ export default class jcSlider {
   }
 
   init() {
+    this.speed();
     this.checks();
     this.nextSlide();
     this.prevSlide();
     this.pagination();
+    this.getActiveSlide();
   }
 }
