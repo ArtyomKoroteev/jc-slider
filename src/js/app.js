@@ -18,7 +18,11 @@ import JcSlider from './modules/jc_slider';
       //   el: '.jc-slider-pagination',
       // },
       // speed: 1000,
+      // autoplay: {
+      //   on: false,
+      //   delay: 3000,
+      // },
     });
-    // console.log(slider);
+    console.log(slider);
   });
 })(jQuery);
