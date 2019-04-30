@@ -19,7 +19,6 @@ import JcSlider from './modules/jc_slider';
       // },
       // speed: 1000,
     });
-    console.log(slider);
-    
+    // console.log(slider);
   });
 })(jQuery);

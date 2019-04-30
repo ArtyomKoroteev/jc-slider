@@ -9,11 +9,10 @@ export default class JcSlider {
         el: '.jc-slider-pagination',
       },
       autoplay: false,
-      speed: 500,
+      speed: 1000,
     };
     this.options = $.extend(this.defaults, options);
-    console.log(this.options);
-    
+
     this.slider = sliderObj;
     this.navNext = this.options.navigation.navNext;
     this.navPrev = this.options.navigation.navPrev;
@@ -43,53 +42,72 @@ export default class JcSlider {
   }
 
   getActiveSlide() {
-    // console.log();
-    $($(this.slider).children()[0]).addClass('jc-slider-active');
-    $($(this.paginate).children()[0]).addClass('jc-slider-bullet-active');
-    // $($(this.slider).children()[0]).next().addClass('jc-slider-next');
+    $($(this.slider).children()[this._move]).addClass('jc-slider-active');
+    $($(this.paginate).children()[this._move]).addClass('jc-slider-bullet-active');
   }
 
-  nextSlide() {
+  slideChange(iterator) {
+    this._move = this._move + iterator;
+    $(this.slider).css('transform', `translate3D(${this._move * (-$(this.slider).innerWidth())}px, 0, 0)`);
+    $($(this.slider).children()[this._move]).addClass('jc-slider-active');
+    $(this.navPrev).removeClass(this.BUTTON_DISABLE);
+  }
+
+  events() {
+    /* next slide change */
     $(this.navNext).on('click', () => {
-      if (-this._move > (-($(this.slider).innerWidth()) * ($(this.slider).children().length - 1))) {
-        this._move += $(this.slider).innerWidth();
-        $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
-        $(this.navPrev).removeClass(this.BUTTON_DISABLE);
+      if (this._move < $(this.slider).children().length - 1) {
+        this.slideChange(1);
+        this.pagination();
+        $($(this.paginate).children()[this._move]).prev().removeClass('jc-slider-bullet-active');
+        $($(this.slider).children()[this._move]).prev().removeClass('jc-slider-active');
       } else {
         $(this.navNext).addClass(this.BUTTON_DISABLE);
       }
     });
-  }
 
-  prevSlide() {
+    /* prev slide change */
     $(this.navPrev).on('click', () => {
       if (this._move !== 0) {
-        this._move -= $(this.slider).innerWidth();
-        $(this.slider).css('transform', `translate3D(${-this._move}px, 0, 0)`);
-        $(this.navNext).removeClass(this.BUTTON_DISABLE);
+        this.slideChange(-1);
+        this.pagination();
+        $($(this.paginate).children()[this._move]).next().removeClass('jc-slider-bullet-active');
+        $($(this.slider).children()[this._move]).next().removeClass('jc-slider-active');
       } else {
         $(this.navPrev).addClass(this.BUTTON_DISABLE);
       }
     });
+    
+    /* pagination bullet click event */
+    $(this.paginate).children().on('click', (e) => {
+      this._move = $(e.target).index() - 1;
+      this.slideChange(1);
+      this.pagination(e);
+    });
   }
 
-  pagination() {
+  paginationRender() {
     if ($(this.slider).find($(this.paginate))) {
       for (let index = 0; index < $(this.slider).children().length; index += 1) {
         $(this.paginate).append('<span tabindex="0" class="jc-slider-bullet"></span>');
       }
     } else {
-      console.log('no');
       this.paginate = false;
+    }
+  }
+
+  pagination() {
+    if (this._move === $($(this.paginate).children()[this._move]).index()) {
+      $($(this.paginate).children()[this._move]).addClass('jc-slider-bullet-active');
     }
   }
 
   init() {
     this.speed();
     this.checks();
-    this.nextSlide();
-    this.prevSlide();
-    this.pagination();
+    this.paginationRender();
     this.getActiveSlide();
+    /* calls last one */
+    this.events();
   }
 }
