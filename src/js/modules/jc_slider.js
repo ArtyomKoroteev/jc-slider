@@ -11,6 +11,11 @@ export default class JcSlider {
       autoplay: {
         on: false,
       },
+      on: {
+        nextSlideChange: null,
+        prevSlideChange: null,
+        init: null,
+      },
       speed: 1000,
     };
     this.options = $.extend(this.defaults, options);
@@ -25,6 +30,7 @@ export default class JcSlider {
     this._move = 0;
     this._prevMove = 0;
     this.BUTTON_DISABLE = 'jc-slider-disable';
+    this.on = this.options.on;
     this.init();
   }
 
@@ -55,27 +61,30 @@ export default class JcSlider {
     this._move = this._move + iterator;
     $(this.slider).css('transform', `translate3D(${this._move * (-$($(this.slider).children()).innerWidth())}px, 0, 0)`);
     $($(this.slider).children()[this._move]).addClass('jc-slider-active');
-    $(this.navPrev).removeClass(this.BUTTON_DISABLE);
   }
 
   nextSlide() {
     if (this._move < $(this.slider).children().length - 1) {
       this._slideChange(1);
+      $(this.navPrev).removeClass(this.BUTTON_DISABLE);
       $($(this.paginate).children()[this._move]).prevAll().removeClass('jc-slider-bullet-active');
       $($(this.slider).children()[this._move]).prevAll().removeClass('jc-slider-active');
     } else {
       $(this.navNext).addClass(this.BUTTON_DISABLE);
     }
+    if (this.on.nextSlideChange !== null && typeof this.on.nextSlideChange === 'function') this.on.nextSlideChange();
   }
 
   prevSlide() {
     if (this._move > 0) {
       this._slideChange(-1);
+      $(this.navNext).removeClass(this.BUTTON_DISABLE);
       $($(this.paginate).children()[this._move]).nextAll().removeClass('jc-slider-bullet-active');
       $($(this.slider).children()[this._move]).nextAll().removeClass('jc-slider-active');
     } else {
       $(this.navPrev).addClass(this.BUTTON_DISABLE);
     }
+    if (this.on.prevSlideChange !== null && typeof this.on.prevSlideChange === 'function') this.on.prevSlideChange();
   }
 
   events() {
@@ -122,6 +131,7 @@ export default class JcSlider {
     } else {
       this.nextSlide();
       this._paginationState();
+      $(this.navNext).removeClass(this.BUTTON_DISABLE);
       $($(this.paginate).children()[this._move]).nextAll().removeClass('jc-slider-bullet-active');
       $($(this.slider).children()[this._move]).nextAll().removeClass('jc-slider-active');
     }
@@ -129,10 +139,12 @@ export default class JcSlider {
 
   autoPlayFunc(flag, delay) {
     if (flag === true) {
-      setInterval(() => {
-        this.nextSlide();
-        this.pagination();
-      }, delay);
+      if (this._move < $(this.slider).children().length - 1) {
+        setInterval(() => {
+          this.nextSlide();
+          this._paginationState();
+        }, delay);
+      }
     }
   }
 
@@ -144,5 +156,6 @@ export default class JcSlider {
     this.autoPlayFunc(this.autoPlay, this.autoPlayDelay);
     /* calls last one */
     this.events();
+    if (this.on.initialization !== null && typeof this.on.initialization === 'function') this.on.initialization();
   }
 }

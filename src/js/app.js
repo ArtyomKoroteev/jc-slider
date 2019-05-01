@@ -10,18 +10,29 @@ import JcSlider from './modules/jc_slider';
   // When DOM is ready
   $(() => {
     const slider = new JcSlider('.jc-slider-wrapper', {
-      // navigation: {
-      //   navNext: '.jc-slider-next',
-      //   navPrev: '.jc-slider-prev',
-      // },
-      // pagination: {
-      //   el: '.jc-slider-pagination',
-      // },
-      // speed: 1000,
+      navigation: {
+        navNext: '.jc-slider-next',
+        navPrev: '.jc-slider-prev',
+      },
+      pagination: {
+        el: '.jc-slider-pagination',
+      },
+      speed: 1500,
       // autoplay: {
-      //   on: false,
+      //   on: true,
       //   delay: 3000,
       // },
+      on: {
+        initialization() {
+          // console.log('init start');
+        },
+        nextSlideChange() {
+          // console.log('next callback working');
+        },
+        prevSlideChange() {
+          // console.log('prev callback working');
+        },
+      },
     });
     console.log(slider);
   });
