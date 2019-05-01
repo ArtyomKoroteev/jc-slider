@@ -51,65 +51,53 @@ export default class JcSlider {
     $($(this.paginate).children()[this._move]).addClass('jc-slider-bullet-active');
   }
 
+  _slideChange(iterator) {
+    this._move = this._move + iterator;
+    $(this.slider).css('transform', `translate3D(${this._move * (-$($(this.slider).children()).innerWidth())}px, 0, 0)`);
+    $($(this.slider).children()[this._move]).addClass('jc-slider-active');
+    $(this.navPrev).removeClass(this.BUTTON_DISABLE);
+  }
+
   nextSlide() {
     if (this._move < $(this.slider).children().length - 1) {
-      this._move = this._move + 1;
-      $(this.slider).css('transform', `translate3D(${this._move * (-$($(this.slider).children()).innerWidth())}px, 0, 0)`);
-      $($(this.slider).children()[this._move]).addClass('jc-slider-active');
-      $(this.navPrev).removeClass(this.BUTTON_DISABLE);
-      $($(this.paginate).children()[this._move]).prev().removeClass('jc-slider-bullet-active');
-      $($(this.slider).children()[this._move]).prev().removeClass('jc-slider-active');
+      this._slideChange(1);
+      $($(this.paginate).children()[this._move]).prevAll().removeClass('jc-slider-bullet-active');
+      $($(this.slider).children()[this._move]).prevAll().removeClass('jc-slider-active');
     } else {
       $(this.navNext).addClass(this.BUTTON_DISABLE);
     }
   }
 
   prevSlide() {
-    if (this._move !== 0) {
-      this._move = this._move - 1;
-      $(this.slider).css('transform', `translate3D(${this._move * (-$($(this.slider).children()).innerWidth())}px, 0, 0)`);
-      $($(this.slider).children()[this._move]).addClass('jc-slider-active');
-      $(this.navPrev).removeClass(this.BUTTON_DISABLE);
-      $($(this.paginate).children()[this._move]).next().removeClass('jc-slider-bullet-active');
-      $($(this.slider).children()[this._move]).next().removeClass('jc-slider-active');
+    if (this._move > 0) {
+      this._slideChange(-1);
+      $($(this.paginate).children()[this._move]).nextAll().removeClass('jc-slider-bullet-active');
+      $($(this.slider).children()[this._move]).nextAll().removeClass('jc-slider-active');
     } else {
       $(this.navPrev).addClass(this.BUTTON_DISABLE);
     }
   }
 
   events() {
+    /* pagination bullet click event */
+    $(this.paginate).children().on('click', (e) => {
+      this.pagination(e);
+    });
+
     /* next slide change */
     $(this.navNext).on('click', () => {
       this.nextSlide();
-      this.pagination();
+      this._paginationState();
     });
 
     /* prev slide change */
     $(this.navPrev).on('click', () => {
       this.prevSlide();
-      this.pagination();
-    });
-
-    /* pagination bullet click event */
-    $(this.paginate).children().on('click', (e) => {
-      this._move = $(e.target).index() - 1;
-      // console.log($(e.target).index() - 1, this._move);
-      this._prevMove += 1;
-      console.log(this._prevMove, this._move);
-      
-      // if ($(e.target).index() > this._move) {
-      //   this.nextSlide();
-      //   this.pagination();
-      //   console.log('next');
-      // } else {
-      //   this.prevSlide();
-      //   this.pagination();
-      //   console.log('prev');
-      // }
+      this._paginationState();
     });
   }
 
-  paginationRender() {
+  _paginationRender() {
     if ($(this.slider).find($(this.paginate))) {
       for (let index = 0; index < $(this.slider).children().length; index += 1) {
         $(this.paginate).append('<span tabindex="0" class="jc-slider-bullet"></span>');
@@ -119,9 +107,23 @@ export default class JcSlider {
     }
   }
 
-  pagination() {
+  _paginationState() {
     if (this._move === $($(this.paginate).children()[this._move]).index()) {
       $($(this.paginate).children()[this._move]).addClass('jc-slider-bullet-active');
+    }
+  }
+
+  pagination(event) {
+    this._move = $(event.target).index() - 1;
+    if ($(event.target).index() > this._prevMove) {
+      this.nextSlide();
+      this._paginationState();
+      this._prevMove = $(event.target).index() - 1;
+    } else {
+      this.nextSlide();
+      this._paginationState();
+      $($(this.paginate).children()[this._move]).nextAll().removeClass('jc-slider-bullet-active');
+      $($(this.slider).children()[this._move]).nextAll().removeClass('jc-slider-active');
     }
   }
 
@@ -137,7 +139,7 @@ export default class JcSlider {
   init() {
     this.speed();
     this.checks();
-    this.paginationRender();
+    this._paginationRender();
     this.setActiveSlide();
     this.autoPlayFunc(this.autoPlay, this.autoPlayDelay);
     /* calls last one */
