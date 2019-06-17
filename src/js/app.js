@@ -32,6 +32,9 @@ import JcSlider from './modules/jc_slider';
         prevSlideChange() {
           // console.log('prev callback working');
         },
+        resize() {
+          // console.log('resize callback working');
+        }
       },
     });
     console.log(slider);

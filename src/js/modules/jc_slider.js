@@ -48,6 +48,15 @@ export default class JcSlider {
     }
   }
 
+  size() {
+    return $(this.slider).width();
+  }
+
+  resize() {
+    $(this.slider).find('.jc-slider-slide').css('width', `${this.size()}px`);
+    if (this.on.resize !== null && typeof this.on.resize === 'function') this.on.resize();
+  }
+
   speed() {
     $(this.slider).css('transition-duration', `${this.speedVal}ms`);
   }
@@ -59,7 +68,7 @@ export default class JcSlider {
 
   _slideChange(iterator) {
     this._move = this._move + iterator;
-    $(this.slider).css('transform', `translate3D(${this._move * (-$($(this.slider).children()).innerWidth())}px, 0, 0)`);
+    $(this.slider).css('transform', `translate3D(${this._move * (-(this.size()))}px, 0, 0)`);
     $($(this.slider).children()[this._move]).addClass('jc-slider-active');
   }
 
@@ -103,6 +112,9 @@ export default class JcSlider {
     $(this.navPrev).on('click', () => {
       this.prevSlide();
       this._paginationState();
+    });
+    $(window).on('resize load', () => {
+      this.resize();
     });
   }
 
